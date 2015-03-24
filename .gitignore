@@ -77,3 +77,4 @@ config/initializers/secret_token.rb
 *.bowerrc
 bower.json
 
+
