@@ -1,0 +1,178 @@
+return unless yes?('Use Template?')
+
+if yes('use grape?')
+  gem 'grape'
+end
+
+if yes('use db?')
+  # PG/MySQL Log Formatter
+  gem 'rails-flog'
+  if yes('use mysql?')
+    gem 'mysql2'
+  end
+  if yes('use pg?')
+    gem 'pg'
+    gem 'rails_12factor'
+  end
+end
+
+if yes('use devise?')
+  # authenticaiton
+  gem 'devise'
+  gem 'omniauth'
+  gem 'omniauth-facebook'
+end
+
+if yes('use active_admin?')
+  # admin
+  gem 'activeadmin', github: 'gregbell/active_admin'
+  gem 'active_admin_importable'
+end
+
+if yes('use slim?')
+  gem 'slim-rails', github: 'slim-template/slim-rails'
+end
+
+if yes('use simple_form?')
+  # form
+  gem 'simple_form', '~> 3.1.0'
+end
+
+if yes('use bootstrap?')
+  # bootstrap
+  gem 'twitter-bootstrap-rails'
+  gem 'therubyracer', platforms: :ruby
+  gem 'libv8', '~> 3.16.14.0'
+  gem 'less-rails'
+  gem "font-awesome-rails"
+end
+
+# Assets log cleaner
+gem 'quiet_assets'
+
+
+if yes('use carrierwave?')
+  # Image File Uploader
+  gem 'carrierwave'
+  gem 'rmagick', :require => false
+  gem 'fog', '~> 1.3.1'
+end
+
+# for AWS upload
+gem "aws-sdk"
+
+# Pagenation
+gem 'kaminari'
+
+# check performance
+gem 'newrelic_rpm'
+
+# Seed Management
+gem 'seed-fu', github: 'mbleigh/seed-fu'
+
+# constant value, settings
+gem 'rails_config'
+
+# Use ActiveModel has_secure_password
+gem 'bcrypt'
+
+# SEO
+gem 'meta-tags', :require => 'meta_tags'
+gem 'sitemap_generator'
+
+if yes('use whenever?')
+  # Cron Management(in Heroku, cron cannot be used. heroku-scheduler should be used.)
+  gem 'whenever', :require => false
+end
+
+# Hash extensions
+gem 'hashie'
+
+# Progress Bar
+#gem 'nprogress-rails'
+
+# presenter layer
+#gem 'draper'
+
+gem_group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
+
+  # Airbrake
+  #gem 'airbrake'
+
+  # Access an IRB console on exception pages or by using <%= console %> in views
+  gem 'web-console', '~> 2.0'
+
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+
+  # make ER map
+  gem "rails-erd"
+
+  # good to read error screen
+  gem 'better_errors'
+  gem 'binding_of_caller'
+
+  # Rack Profiler
+  # gem 'rack-mini-profiler'
+
+  # check unuseful sql
+  gem 'bullet'
+
+  # tells me rails best practice
+  gem 'rails_best_practices'
+
+  gem 'rubocop
+
+  # Pry
+  gem 'pry-rails'
+  gem 'pry-coolline'
+  gem 'pry-byebug'
+  gem 'pry-doc'
+  gem 'pry-stack_explorer'
+  gem 'awesome_print' # remove to get mongo error away
+  # nice show of sql result
+  gem 'hirb'
+  gem 'hirb-unicode'
+
+  # RSpec
+  gem 'rspec-rails'
+  gem 'annotate'
+  gem 'capybara'
+  gem 'database_rewinder'
+  gem 'factory_girl_rails'
+  gem 'launchy'
+  gem 'poltergeist'
+  gem 'timecop'
+  gem 'launchy'
+end
+
+if yes('use rails assets?')
+  add_source('https://rails-assets.org')
+  gem 'rails-assets-bootstrap' if yes('use bootstrap?')
+end
+
+application <<-GENERATORS
+config.generators do |g|
+  g.orm :active_record
+  g.template_engine :slim
+  g.helper false
+  g.assets false
+  g.test_framework :rspec
+  g.fixture_replacement :factory_girl
+  g.controller_specs false
+  g.view_specs false
+end
+GENERATORS
+
+run 'bundle install --path vendor/bundle'
+
+remove_file './app/views/layouts/application.html.erb'
+get 'https://gist.github.com/chiastolite/7197619/raw/application.html.slim', './app/views/layouts/application.html.slim'
+
+generate 'rspec:install'
+
+git :init
+git :add => '.'
+git :commit => '-am "Initial commit"'
