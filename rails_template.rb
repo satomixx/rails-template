@@ -95,7 +95,7 @@ if yes?('use carrierwave?')
   # Image File Uploader
   gem 'carrierwave'
   gem 'rmagick', :require => false
-  gem 'fog', '~> 1.3.1'
+  gem 'fog'
 end
 
 # for AWS upload
@@ -206,10 +206,10 @@ gem_group :development, :test do
   gem "webmock"
 end
 
-if yes?('use rails assets?')
-  add_source('https://rails-assets.org')
-  gem 'rails-assets-bootstrap' if yes?('use bootstrap?')
-end
+#if yes?('use rails assets?')
+#  add_source('https://rails-assets.org')
+#  gem 'rails-assets-bootstrap' if yes?('use bootstrap?')
+#end
 
 run 'bundle install --path vendor/bundle'
 generate 'kaminari:config'
@@ -265,21 +265,21 @@ environment 'config.action_mailer.delivery_method = :letter_opener', env: 'devel
 #directory File.expand_path('spec', dir), 'spec', recursive: true
 
 if use_devise
-  uncomment_lines 'spec/spec_helper.rb', 'include Warden::Test::Helpers'
-  uncomment_lines 'spec/spec_helper.rb', 'config.include Devise::TestHelpers, type: :controller'
-  uncomment_lines 'spec/spec_helper.rb', 'config.include Devise::TestHelpers, type: :view'
-  uncomment_lines 'spec/spec_helper.rb', 'Warden.test_mode!'
-  uncomment_lines 'spec/spec_helper.rb', 'Warden.test_reset!'
+  #uncomment_lines 'spec/spec_helper.rb', 'include Warden::Test::Helpers'
+  #uncomment_lines 'spec/spec_helper.rb', 'config.include Devise::TestHelpers, type: :controller'
+  #uncomment_lines 'spec/spec_helper.rb', 'config.include Devise::TestHelpers, type: :view'
+  #uncomment_lines 'spec/spec_helper.rb', 'Warden.test_mode!'
+  #uncomment_lines 'spec/spec_helper.rb', 'Warden.test_reset!'
   generate 'devise:install'
 end
 
-if use_cancan
+if use_cancancan
   generate 'cancan:ability'
 end
 
-append_to_file '.rspec' do
-  "--format documentation\n--format ParallelTests::RSpec::FailuresLogger --out tmp/failing_specs.log"
-end
+#append_to_file '.rspec' do
+#  "--format documentation\n--format ParallelTests::RSpec::FailuresLogger --out tmp/failing_specs.log"
+#end
 
 # Unicorn setting
 # ----------------------------------------------------------------
@@ -404,9 +404,9 @@ if use_devise
   generate 'devise:views'
   git add: "."
   git commit: %Q{ -m 'Add devise model and views.' }
-  if use_bitbucket
-    git push: 'origin master'
-  end
+  #if use_bitbucket
+  #  git push: 'origin master'
+  #end
   say "!!! Please set up #{devise_model} migration file and rake db:migrate !!!"
 end
 exit
