@@ -17,10 +17,10 @@ use_heroku = if yes?('use heroku')
 if yes?('use db?')
   # PG/MySQL Log Formatter
   gem 'rails-flog'
-  if yes('use mysql?')
+  if yes?('use mysql?')
     gem 'mysql2'
   end
-  if yes('use pg?')
+  if yes?('use pg?')
     gem 'pg'
     gem 'rails_12factor'
   end
@@ -123,7 +123,7 @@ gem 'bcrypt'
 gem 'meta-tags', :require => 'meta_tags'
 gem 'sitemap_generator'
 
-if yes('use whenever?')
+if yes?('use whenever?')
   gem 'whenever', :require => false
 end
 
@@ -168,7 +168,7 @@ gem_group :development, :test do
   gem 'rails_best_practices'
 
   gem "annotate"
-  gen 'letter_opener'
+  gem 'letter_opener'
   gem 'rubocop'
   gem 'timecop'
 
@@ -206,9 +206,9 @@ gem_group :development, :test do
   gem "webmock"
 end
 
-if yes('use rails assets?')
+if yes?('use rails assets?')
   add_source('https://rails-assets.org')
-  gem 'rails-assets-bootstrap' if yes('use bootstrap?')
+  gem 'rails-assets-bootstrap' if yes?('use bootstrap?')
 end
 
 run 'bundle install --path vendor/bundle'
@@ -232,7 +232,8 @@ else
   generate 'simple_form:install'
 end
 
-application <<-GENERATORS
+application do
+    %q{
 config.active_record.default_timezone = :local
 config.time_zone = 'Tokyo'
 config.i18n.default_locale = :ja
@@ -249,7 +250,8 @@ config.generators do |g|
   g.routing_specs false
 end
 config.autoload_paths += %W(#{config.root}/lib)
-GENERATORS
+  }
+end
 
 # Environment setting
 # ----------------------------------------------------------------
@@ -259,8 +261,8 @@ environment 'config.action_mailer.delivery_method = :letter_opener', env: 'devel
 
 # RSpec setting
 # ----------------------------------------------------------------
-remove_file 'spec'
-directory File.expand_path('spec', dir), 'spec', recursive: true
+#remove_file 'spec'
+#directory File.expand_path('spec', dir), 'spec', recursive: true
 
 if use_devise
   uncomment_lines 'spec/spec_helper.rb', 'include Warden::Test::Helpers'
@@ -346,7 +348,7 @@ case gem_for_database
     run "sed -i -e \"s/#{app_name}_test/#{app_name}_test<%= ENV[\\'TEST_ENV_NUMBER\\']%>/g\" config/database.yml"
   when 'sqlite3'
     run "sed -i -e \"s/db\\/test.sqlite3/db\\/test<%= ENV[\\'TEST_ENV_NUMBER\\']%>.sqlite3/g\" config/database.yml"
-  else
+  else  
 end
 
 run "cp config/database.yml config/database.yml.sample"
